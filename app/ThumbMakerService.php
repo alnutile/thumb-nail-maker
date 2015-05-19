@@ -36,6 +36,9 @@ class ThumbMakerService {
             $this->thumbnail_destination = base_path("storage");
         }
 
+        if(!Storage::exists($this->thumbnail_destination))
+            Storage::makeDirectory($this->thumbnail_destination, 0755, true);
+
         $files = Storage::disk('s3')->allFiles($this->folder);
 
         Log::info(print_r($files, 1));
