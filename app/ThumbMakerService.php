@@ -26,16 +26,19 @@ class ThumbMakerService {
         if(isset($payload['secret']))
             Config::set('S3_SECRET', $payload['secret']);
 
-        if(isset($payload['destination']))
+        if(isset($payload['key']))
             Config::set('S3_KEY', $payload['key']);
 
-        if(isset($payload['key']))
-            $this->thumbnail_destination = $payload['key'];
+        if(isset($payload['destination']))
+        {
+            $this->thumbnail_destination = $payload['destination'];
+        } else {
+            $this->thumbnail_destination = base_path("storage");
+        }
 
         $files = Storage::disk('s3')->allFiles($this->folder);
 
         Log::info(print_r($files, 1));
-
 
         $this->getAndMake($files);
 
@@ -76,14 +79,11 @@ class ThumbMakerService {
 
                 Log::info("Convert $file $destination");
 
-                $thumb_destination = ($this->thumbnail_destination) ? $this->thumbnail_destination : base_path("storage");
-                $thumb_destination = $thumb_destination . "/thumb_{$name}.gif";
+                $thumb_destination = $this->thumbnail_destination . "/thumb_{$name}.gif";
 
                 Log::info($thumb_destination);
-
-                exec("convert -define png:size=387x500 {$destination} -auto-orient -thumbnail 387x500  -unsharp 0x.5 {$thumb_destination}", $output, $results);
-
-                Log::info(print_r($output, 1));
+                if(!File::exists($thumb_destination))
+                    exec("convert -define png:size=387x500 {$destination} -auto-orient -thumbnail 387x500  -unsharp 0x.5 {$thumb_destination}", $output, $results);
             }
         }
     }
