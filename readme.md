@@ -40,6 +40,7 @@ For a full set of env options
   "region": "east-foo",
   "secret": "bar",
   "key":    "foo",
+  "destination": "thumbnails"
 }
 ~~~
 

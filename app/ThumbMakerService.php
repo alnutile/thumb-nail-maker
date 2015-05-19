@@ -9,6 +9,7 @@ class ThumbMakerService {
 
 
     protected $folder;
+    protected $thumbnail_destination;
 
     public function handle($payload)
     {
@@ -25,8 +26,11 @@ class ThumbMakerService {
         if(isset($payload['secret']))
             Config::set('S3_SECRET', $payload['secret']);
 
-        if(isset($payload['key']))
+        if(isset($payload['destination']))
             Config::set('S3_KEY', $payload['key']);
+
+        if(isset($payload['key']))
+            $this->thumbnail_destination = $payload['key'];
 
         $files = Storage::disk('s3')->allFiles($this->folder);
 
@@ -72,7 +76,8 @@ class ThumbMakerService {
 
                 Log::info("Convert $file $destination");
 
-                $thumb_destination = base_path() . "/storage/thumb_{$name}.gif";
+                $thumb_destination = ($this->thumbnail_destination) ? $this->thumbnail_destination : base_path("storage");
+                $thumb_destination = $thumb_destination . "/thumb_{$name}.gif";
 
                 Log::info($thumb_destination);
 
