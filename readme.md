@@ -1,5 +1,10 @@
 # Iron ThumbnailMaker
 
+This post https://alfrednutile.info/posts/143 covers the setup of docker and iron cli.
+Also some of the basics of what is happening.
+
+From there you can use this library to build out thumbnails for you.
+
 
 ## Run locally
 
@@ -37,3 +42,7 @@ For a full set of env options
   "key":    "foo",
 }
 ~~~
+
+## Upload worker
+
+sh ./upload_worker.sh
