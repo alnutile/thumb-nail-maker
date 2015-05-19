@@ -2,3 +2,5 @@
 /vendor
 .env
 iron.json
+storage/*.png
+.idea/*

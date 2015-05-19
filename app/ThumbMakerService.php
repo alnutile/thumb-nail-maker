@@ -14,8 +14,19 @@ class ThumbMakerService {
     {
         $this->folder = $payload['folder'];
 
+        $this->cleanUp();
+
         if(isset($payload['bucket']))
             Config::set('S3_BUCKET', $payload['bucket']);
+
+        if(isset($payload['region']))
+            Config::set('S3_REGION', $payload['region']);
+
+        if(isset($payload['secret']))
+            Config::set('S3_SECRET', $payload['secret']);
+
+        if(isset($payload['key']))
+            Config::set('S3_KEY', $payload['key']);
 
         $files = Storage::disk('s3')->allFiles($this->folder);
 
@@ -26,6 +37,7 @@ class ThumbMakerService {
 
         $this->uploadFilesBacktoS3();
 
+        $this->cleanUp();
     }
 
     protected function uploadFilesBacktoS3()
@@ -50,7 +62,6 @@ class ThumbMakerService {
         foreach($files as $file) {
             if (strpos($file, 'thumb_') === false)
             {
-                //Download here
                 $content = Storage::disk('s3')->get($file);
 
                 $name = File::name($file);
@@ -61,7 +72,6 @@ class ThumbMakerService {
 
                 Log::info("Convert $file $destination");
 
-                //Convert
                 $thumb_destination = base_path() . "/storage/thumb_{$name}.gif";
 
                 Log::info($thumb_destination);
@@ -69,6 +79,18 @@ class ThumbMakerService {
                 exec("convert -define png:size=387x500 {$destination} -auto-orient -thumbnail 387x500  -unsharp 0x.5 {$thumb_destination}", $output, $results);
 
                 Log::info(print_r($output, 1));
+            }
+        }
+    }
+
+    private function cleanUp()
+    {
+        $files = File::files(storage_path());
+        foreach($files as $file)
+        {
+            if(strpos(File::mimeType($file), 'image') != false)
+            {
+                File::delete($file);
             }
         }
     }

@@ -1,6 +1,6 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
+    "name": "alnutile/thumbnail-maker",
+    "description": "IronIO ThumbNail maker",
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
     "type": "project",
